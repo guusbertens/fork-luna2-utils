@@ -67,7 +67,8 @@ function fetch_processes() {
 }
 
 function fetch_logs() {
-	for logfile in messages\* luna alertx pacemaker trinity.log sssd slurm httpd nginx ondemand-nginx prometheus aria2c\* alertx; do
+	for logfile in messages\* luna alertx pacemaker trinity.log \
+	sssd slurm httpd nginx ondemand-nginx aria2c\* alertx; do
 		echo "== logfiles $logfile =="
 		cp -arL /var/log/$logfile $WORK/log/ 2>&1
 	done
@@ -75,7 +76,9 @@ function fetch_logs() {
 }
 
 function fetch_conf() {
-	for conffile in drbd drbd.d sssd slurm sudoers sudoers.d ssh dhcp named named.conf http nginx my.cnf my.cnf.d selinux ood trinity security; do
+	for conffile in drbd drbd.d sssd slurm sudoers sudoers.d ssh \
+	dhcp named named.conf hosts resolv.conf http nginx my.cnf my.cnf.d \
+	selinux ood trinity security; do
 		echo "== conffiles $conffile =="
 		cp -arL /etc/$conffile $WORK/etc/ 2>&1
 	done
@@ -87,6 +90,15 @@ function fetch_var() {
 		echo "== varfiles $varfile =="
 		cp -arL /var/$varfile $WORK/var/ 2>&1
 	done
+	echo
+}
+
+function fetch_prom_logs() {
+	echo "== prometheus logfiles =="
+	if [ ! -d $WORK/log/prometheus ]; then
+		mkdir -p $WORK/log/prometheus 2>&1
+	fi
+	cp -aL /var/log/prometheus/*.log $WORK/log/prometheus/ 2>&1
 	echo
 }
 
@@ -339,6 +351,7 @@ fetch_firewallinfo
 fetch_netstat
 fetch_ipmi
 fetch_logs
+fetch_prom_logs
 fetch_node_logs
 fetch_conf
 fetch_var
