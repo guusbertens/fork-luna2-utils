@@ -285,6 +285,16 @@ function fetch_ulimits() {
 	echo
 }
 
+function fetch_diskspace() {
+	echo "== diskspace =="
+	if [ "$(which timeout)" ]; then
+		timeout -s9 20s df -h
+	else
+		df -h
+	fi
+	echo
+}
+
 # -------------------------- main ---------------------------
 
 add_message "TrinityX sos gathering utility for support purposes"
@@ -361,6 +371,7 @@ fetch_packages
 fetch_lvm
 fetch_zfs
 fetch_mounts
+fetch_diskspace
 fetch_systemctl
 fetch_clusterinfo
 fetch_trixdiag
